@@ -29,7 +29,12 @@ public class Emulator {
         }
         DirectoryStream<Path> files = Files.newDirectoryStream(CurrentDirectory);
          for (Path path : files){
-            System.out.println(path.getFileName());
+            if(Files.isDirectory(path)){
+                System.out.println(path.getFileName() + "/");
+            }
+            else{
+                System.out.println(path.getFileName());
+            }
          }
         files.close();
     }
@@ -42,6 +47,7 @@ public class Emulator {
         }
         String[] command_directory = input_line.split(" ");
         CurrentDirectory = Path.of(CurrentDirectory.toString() + "\\" + command_directory[1]).normalize().toAbsolutePath();
+        return;
     }
 
     //реализация комманды exit
@@ -56,8 +62,15 @@ public class Emulator {
     }
 
     //реализация комманды cat
-    public void cat_Command(String input_line){
-
+    public void cat_Command(String input_line) throws IOException{
+        if(inputClass.inputControl(input_line, "cat", CurrentDirectory)){
+            System.out.println("command " + input_line + " not found");
+            return;
+        }
+        String[] command_directory = input_line.split(" ");
+        Path CurrentFile = Path.of(CurrentDirectory.toString() + "\\" + command_directory[1]).normalize().toAbsolutePath();
+        String result = Files.readString(CurrentFile);
+        System.out.println(result);
     }
 
     //реализация комманды rev
@@ -69,11 +82,7 @@ public class Emulator {
     public boolean command_Reader() throws IOException{
         Scanner scan = new Scanner(System.in);
         String input_line = scan.nextLine();
-        if(input_line.startsWith("test")){
-            System.out.println(CurrentDirectory.toString());
-            return false;
-        }
-        else if(input_line.startsWith("ls") ){
+        if(input_line.startsWith("ls") ){
             this.ls_Command(input_line);
             return false;
         }
