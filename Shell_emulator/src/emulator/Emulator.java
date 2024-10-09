@@ -13,35 +13,40 @@ public class Emulator {
     //Поле - путь к tar архиву с виртуальной файловой системой
     Path pathToVirtualFileSystem;
     //Поле - путь к текущей директории
-    Path CurrentPath;
+    Path CurrentDirectory;
     
     //конструктор
     public Emulator(){
         pathToVirtualFileSystem = Path.of("src\\Virtual_File_System.tar");
-        CurrentPath = Path.of("src").toAbsolutePath();
+        CurrentDirectory = Path.of("src").toAbsolutePath();
     }
 
     //реализация комманды ls
     public void ls_Command(String input_line) throws IOException{
-        if(inputClass.inputControl(input_line, "ls", CurrentPath)){
-            System.out.println("command " + input_line + "not found");
+        if(inputClass.inputControl(input_line, "ls", CurrentDirectory)){
+            System.out.println("command " + input_line + " not found");
             return;
         }
-        DirectoryStream<Path> files = Files.newDirectoryStream(CurrentPath);
+        DirectoryStream<Path> files = Files.newDirectoryStream(CurrentDirectory);
          for (Path path : files){
-            System.out.println(path);
+            System.out.println(path.getFileName());
          }
         files.close();
     }
 
     //реализация комманды cd
     public void cd_Command(String input_line){
-
+        if(inputClass.inputControl(input_line, "cd", CurrentDirectory)){
+            System.out.println("command " + input_line + " not found");
+            return;
+        }
+        String[] command_directory = input_line.split(" ");
+        CurrentDirectory = Path.of(CurrentDirectory.toString() + "\\" + command_directory[1]).normalize().toAbsolutePath();
     }
 
     //реализация комманды exit
     public boolean exit_Command(String input_line){
-        if(inputClass.inputControl(input_line, "exit", CurrentPath)){
+        if(inputClass.inputControl(input_line, "exit", CurrentDirectory)){
             System.out.println("command " + input_line + " not found");
             return false;
         }
@@ -64,7 +69,11 @@ public class Emulator {
     public boolean command_Reader() throws IOException{
         Scanner scan = new Scanner(System.in);
         String input_line = scan.nextLine();
-        if(input_line.startsWith("ls") ){
+        if(input_line.startsWith("test")){
+            System.out.println(CurrentDirectory.toString());
+            return false;
+        }
+        else if(input_line.startsWith("ls") ){
             this.ls_Command(input_line);
             return false;
         }

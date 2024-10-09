@@ -17,8 +17,7 @@ public class inputClass {
             if(command_words.length != 2){
                 return true;
             }
-            String[] command_directory = input_line.split("\"");
-            CurrentDirectory = Path.of(CurrentDirectory.toString() + command_directory[1]).normalize().toAbsolutePath();
+            CurrentDirectory = Path.of(CurrentDirectory.toString() + "\\" + command_words[1]).normalize().toAbsolutePath();
             if(!Files.exists(CurrentDirectory)){
                 return true;
             }
