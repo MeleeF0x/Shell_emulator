@@ -74,10 +74,23 @@ public class Emulator {
     }
 
     //реализация комманды rev
-    public void rev_Command(String input_line){
-
+    public void rev_Command(String input_line) throws IOException{
+        if(inputClass.inputControl(input_line, "rev", CurrentDirectory)){
+            System.out.println("command " + input_line + " not found");
+            return;
+        }
+        String[] command_line = input_line.split(" ");
+        Path CurrentFile = Path.of(CurrentDirectory.toString() + "\\" + command_line[1]).normalize().toAbsolutePath();
+        if(Files.exists(CurrentFile)){
+            String result = Files.readString(CurrentFile);
+            String reverse_line = new StringBuilder(result).reverse().toString();
+            System.out.println(reverse_line);
+        }
+        else{
+            String reverse_line = new StringBuilder(command_line[1]).reverse().toString();
+            System.out.println(reverse_line);
+        }
     }
-
     //реализация обработки комманд
     public boolean command_Reader() throws IOException{
         Scanner scan = new Scanner(System.in);
@@ -102,7 +115,7 @@ public class Emulator {
             return false;
         }
         else{
-            System.out.println("command not found");
+            System.out.println("command " + input_line + " not found");
             return false;
         }
     }
