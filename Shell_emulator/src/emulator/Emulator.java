@@ -23,7 +23,7 @@ public class Emulator {
 
     //реализация комманды ls
     public void ls_Command(String input_line) throws IOException{
-        if(inputClass.inputControl(input_line, "ls", CurrentDirectory)){
+        if(inputClass.lsInputControl(input_line)){
             System.out.println("command " + input_line + " not found");
             return;
         }
@@ -41,7 +41,7 @@ public class Emulator {
 
     //реализация комманды cd
     public void cd_Command(String input_line){
-        if(inputClass.inputControl(input_line, "cd", CurrentDirectory)){
+        if(inputClass.cdInputControl(input_line, CurrentDirectory)){
             System.out.println("command " + input_line + " not found");
             return;
         }
@@ -52,7 +52,7 @@ public class Emulator {
 
     //реализация комманды exit
     public boolean exit_Command(String input_line){
-        if(inputClass.inputControl(input_line, "exit", CurrentDirectory)){
+        if(inputClass.exitInputControl(input_line)){
             System.out.println("command " + input_line + " not found");
             return false;
         }
@@ -63,7 +63,7 @@ public class Emulator {
 
     //реализация комманды cat
     public void cat_Command(String input_line) throws IOException{
-        if(inputClass.inputControl(input_line, "cat", CurrentDirectory)){
+        if(inputClass.catInputControl(input_line, CurrentDirectory)){
             System.out.println("command " + input_line + " not found");
             return;
         }
@@ -75,7 +75,7 @@ public class Emulator {
 
     //реализация комманды rev
     public void rev_Command(String input_line) throws IOException{
-        if(inputClass.inputControl(input_line, "rev", CurrentDirectory)){
+        if(inputClass.revInputControl(input_line, CurrentDirectory)){
             System.out.println("command " + input_line + " not found");
             return;
         }
