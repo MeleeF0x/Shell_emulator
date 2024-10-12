@@ -3,22 +3,24 @@ package emulator;
 import java.util.Scanner;
 import app.inputClass;
 
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import java.util.zip.*;
+
 public class Emulator {
     //Поля класса
     //Поле - путь к tar архиву с виртуальной файловой системой
-    Path pathToVirtualFileSystem;
+    File pathToVirtualFileSystem;
     //Поле - путь к текущей директории
     Path CurrentDirectory;
     
     //конструктор
     public Emulator(){
-        pathToVirtualFileSystem = Path.of("src\\Virtual_File_System.tar");
-        CurrentDirectory = Path.of("src").toAbsolutePath();
+        CurrentDirectory = Path.of("src\\Virtual_File_System.zip").toAbsolutePath();
+        pathToVirtualFileSystem = CurrentDirectory.toFile();
     }
 
     //реализация комманды ls
@@ -27,6 +29,13 @@ public class Emulator {
             System.out.println("command " + input_line + " not found");
             return;
         }
+        ZipInputStream zin = new ZipInputStream(new FileInputStream(pathToVirtualFileSystem));
+        ZipEntry entry;
+        while((entry = zin.getNextEntry())!= null){
+            System.out.println(entry.getName());
+        }
+        zin.close();
+        /* 
         DirectoryStream<Path> files = Files.newDirectoryStream(CurrentDirectory);
          for (Path path : files){
             if(Files.isDirectory(path)){
@@ -37,6 +46,7 @@ public class Emulator {
             }
          }
         files.close();
+        */
     }
 
     //реализация комманды cd
