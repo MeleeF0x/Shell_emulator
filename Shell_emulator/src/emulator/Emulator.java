@@ -4,7 +4,6 @@ import java.util.Scanner;
 import app.inputClass;
 
 import java.io.*;
-import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -13,14 +12,29 @@ import java.util.zip.*;
 public class Emulator {
     //Поля класса
     //Поле - путь к tar архиву с виртуальной файловой системой
-    File pathToVirtualFileSystem;
+    private String pathToVirtualFileSystem;
     //Поле - путь к текущей директории
-    Path CurrentDirectory;
+    private String CurrentDirectory;
     
     //конструктор
     public Emulator(){
-        CurrentDirectory = Path.of("src\\Virtual_File_System.zip").toAbsolutePath();
-        pathToVirtualFileSystem = CurrentDirectory.toFile();
+        pathToVirtualFileSystem = Path.of("src\\Virtual_File_System.zip").toAbsolutePath().toString();
+        CurrentDirectory = "";
+    }
+
+    //Метод проверки корректности пути файла
+    public boolean isPathExist(String path) throws IOException{
+        ZipInputStream is_path_zin = new ZipInputStream(new FileInputStream(pathToVirtualFileSystem.toString()));
+        ZipEntry entry;
+        while((entry = is_path_zin.getNextEntry()) != null){
+            if(path.compareTo(entry.getName()) == 0 || entry.getName().compareTo(path + "/") == 0){
+                is_path_zin.close();
+                return true;
+            }
+        }
+        is_path_zin.close();
+        return false;
+        
     }
 
     //реализация комманды ls
@@ -29,35 +43,41 @@ public class Emulator {
             System.out.println("command " + input_line + " not found");
             return;
         }
-        ZipInputStream zin = new ZipInputStream(new FileInputStream(pathToVirtualFileSystem));
-        ZipEntry entry;
-        while((entry = zin.getNextEntry())!= null){
-            System.out.println(entry.getName());
+        String[] curr_dir_arr = CurrentDirectory.split("/");
+        ZipInputStream zin = new ZipInputStream(new FileInputStream(pathToVirtualFileSystem.toString()));
+        ZipEntry entry = zin.getNextEntry();
+        if(CurrentDirectory.compareTo("") == 0){
+            while(entry.getName().split("/").length ==  1){
+                System.out.println(entry.getName());
+                entry = zin.getNextEntry();
+            }
+        }
+        else{
+            while(!(entry.getName().startsWith(CurrentDirectory) && entry.getName().split("/").length == curr_dir_arr.length + 1)){
+                entry = zin.getNextEntry();
+            }
+            while((entry != null) && (entry.getName().startsWith(CurrentDirectory) && entry.getName().split("/").length == curr_dir_arr.length + 1)){
+                System.out.println(entry.getName());
+                entry = zin.getNextEntry();
+            }
         }
         zin.close();
-        /* 
-        DirectoryStream<Path> files = Files.newDirectoryStream(CurrentDirectory);
-         for (Path path : files){
-            if(Files.isDirectory(path)){
-                System.out.println(path.getFileName() + "/");
-            }
-            else{
-                System.out.println(path.getFileName());
-            }
-         }
-        files.close();
-        */
     }
 
     //реализация комманды cd
-    public void cd_Command(String input_line){
-        if(inputClass.cdInputControl(input_line, CurrentDirectory)){
+    public void cd_Command(String input_line) throws IOException{
+        String[] command_directory = input_line.split(" ");
+        if(command_directory[1].compareTo("~") == 0 || command_directory[1].compareTo("root") == 0){
+            CurrentDirectory = "";
+        }
+        else if(inputClass.cdInputControl(input_line, CurrentDirectory, this)){
             System.out.println("command " + input_line + " not found");
             return;
         }
-        String[] command_directory = input_line.split(" ");
-        CurrentDirectory = Path.of(CurrentDirectory.toString() + "\\" + command_directory[1]).normalize().toAbsolutePath();
-        return;
+        else{
+            CurrentDirectory = Path.of(CurrentDirectory + "/" + command_directory[1]).normalize().toString();
+            CurrentDirectory = CurrentDirectory.replace("\\", "/").replaceFirst("/","");
+        }
     }
 
     //реализация комманды exit
@@ -73,7 +93,7 @@ public class Emulator {
 
     //реализация комманды cat
     public void cat_Command(String input_line) throws IOException{
-        if(inputClass.catInputControl(input_line, CurrentDirectory)){
+        if(inputClass.catInputControl(input_line, Path.of(CurrentDirectory))){
             System.out.println("command " + input_line + " not found");
             return;
         }
@@ -85,7 +105,7 @@ public class Emulator {
 
     //реализация комманды rev
     public void rev_Command(String input_line) throws IOException{
-        if(inputClass.revInputControl(input_line, CurrentDirectory)){
+        if(inputClass.revInputControl(input_line, Path.of(CurrentDirectory))){
             System.out.println("command " + input_line + " not found");
             return;
         }
