@@ -57,7 +57,14 @@ public class Emulator {
                 entry = zin.getNextEntry();
             }
             while((entry != null) && (entry.getName().startsWith(CurrentDirectory) && entry.getName().split("/").length == curr_dir_arr.length + 1)){
-                System.out.println(entry.getName());
+                if(entry.isDirectory()){
+                    String[] dir_name = entry.getName().split("/");
+                    System.out.println(dir_name[dir_name.length - 1] + "/");
+                }
+                else{
+                    String[] dir_name = entry.getName().split("\\");
+                    System.out.println(dir_name[dir_name.length - 1]);
+                }
                 entry = zin.getNextEntry();
             }
         }
