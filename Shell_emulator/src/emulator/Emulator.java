@@ -4,7 +4,6 @@ import java.util.Scanner;
 import app.inputClass;
 
 import java.io.*;
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 import java.util.zip.*;
@@ -147,6 +146,8 @@ public class Emulator {
             String line = scanner.nextLine();
             System.out.println(line);
         }
+        zipFile.close();
+        scanner.close();
     }
 
     //реализация комманды rev
@@ -156,17 +157,33 @@ public class Emulator {
             return;
         }
         String[] command_line = input_line.split(" ");
-        Path CurrentFile = Path.of(CurrentDirectory.toString() + "\\" + command_line[1]).normalize().toAbsolutePath();
-        if(Files.exists(CurrentFile)){
-            String result = Files.readString(CurrentFile);
-            String reverse_line = new StringBuilder(result).reverse().toString();
-            System.out.println(reverse_line);
+        String readeble_directory = CurrentDirectory;
+        if(readeble_directory == ""){
+            readeble_directory = Path.of(readeble_directory + command_line[1]).normalize().toString();
+        }
+        else{
+            readeble_directory = Path.of(readeble_directory + "/" + command_line[1]).normalize().toString();
+            readeble_directory = readeble_directory.replace("\\", "/");
+        }
+        if(isPathExist(readeble_directory)){
+            ZipFile zipFile = new ZipFile(pathToVirtualFileSystem);
+            ZipEntry entry = getFile(readeble_directory);
+            InputStream inputStream = zipFile.getInputStream(entry);
+            Scanner scanner = new Scanner(inputStream);
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String reverse_line = new StringBuilder(line).reverse().toString();
+                System.out.println(reverse_line);
+            }
+            zipFile.close();
+            scanner.close();
         }
         else{
             String reverse_line = new StringBuilder(command_line[1]).reverse().toString();
             System.out.println(reverse_line);
         }
     }
+
     //реализация обработки комманд
     public boolean command_Reader() throws IOException{
         Scanner scan = new Scanner(System.in);
