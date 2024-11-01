@@ -65,11 +65,10 @@ public class Emulator {
         }
         String[] curr_dir_arr = CurrentDirectory.split("/");
         ZipInputStream zin = new ZipInputStream(new FileInputStream(pathToVirtualFileSystem.toString()));
-        ZipEntry entry = zin.getNextEntry();
+        ZipEntry entry;
         if(CurrentDirectory.compareTo("") == 0){
-            while(entry.getName().split("/").length ==  1){
+            while(((entry = zin.getNextEntry()) != null) && (entry.getName().split("/").length ==  1)){
                 System.out.println(entry.getName());
-                entry = zin.getNextEntry();
             }
         }
         else{
