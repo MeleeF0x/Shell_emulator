@@ -21,21 +21,21 @@ public class ls_Command_test {
 
     @Test
     void ls_Command_Test_normal() throws IOException{
-        Emulator emulator = new Emulator();
+        Emulator emulator = new Emulator("src\\\\main\\\\java\\\\ru\\\\melee_fox\\\\Virtual_File_System.zip");
         emulator.ls_Command("ls");
         Assertions.assertEquals("bin/\r\n" + "dev/\r\n" + "etc/\r\n" + "home/\r\n" + "lib/\r\n" + "media/\r\n" + "mnt/", outputStreamCaptor.toString().trim());
     }
 
     @Test
     void ls_Command_Test_With_Argument() throws IOException{
-        Emulator emulator = new Emulator();
+        Emulator emulator = new Emulator("src\\\\main\\\\java\\\\ru\\\\melee_fox\\\\Virtual_File_System.zip");
         emulator.ls_Command("ls ls");
         Assertions.assertEquals("command ls ls not found", outputStreamCaptor.toString().trim());
     }
 
     @Test
     void ls_Command_Test_With_Error() throws IOException{
-        Emulator emulator = new Emulator();
+        Emulator emulator = new Emulator("src\\\\main\\\\java\\\\ru\\\\melee_fox\\\\Virtual_File_System.zip");
         emulator.ls_Command("lsd");
         Assertions.assertEquals("command lsd not found", outputStreamCaptor.toString().trim());
     }

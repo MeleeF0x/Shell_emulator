@@ -16,8 +16,8 @@ public class Emulator {
     private String CurrentDirectory;
     
     //конструктор
-    public Emulator(){
-        pathToVirtualFileSystem = Path.of("src\\\\main\\\\java\\\\ru\\\\melee_fox\\\\Virtual_File_System.zip").toAbsolutePath().toString();
+    public Emulator(String path){
+        pathToVirtualFileSystem = Path.of(path).toAbsolutePath().toString();
         CurrentDirectory = "";
     }
 

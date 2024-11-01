@@ -21,7 +21,7 @@ public class cd_Command_test {
 
     @Test
     void cd_Command_Test_normal() throws IOException{
-        Emulator emulator = new Emulator();
+        Emulator emulator = new Emulator("src\\\\main\\\\java\\\\ru\\\\melee_fox\\\\Virtual_File_System.zip");
         emulator.cd_Command("cd bin");
         String result = emulator.getCurrentDirectory();
         Assertions.assertEquals("bin", result);
@@ -29,7 +29,7 @@ public class cd_Command_test {
     
     @Test
     void cd_Command_Test_With_Wrong_Argument() throws IOException{
-        Emulator emulator = new Emulator();
+        Emulator emulator = new Emulator("src\\\\main\\\\java\\\\ru\\\\melee_fox\\\\Virtual_File_System.zip");
         emulator.cd_Command("cd wrong_argument");
         String result = emulator.getCurrentDirectory();
         Assertions.assertEquals("", result);
@@ -39,7 +39,7 @@ public class cd_Command_test {
 
     @Test
     void cd_Command_Test_With_Error() throws IOException{
-        Emulator emulator = new Emulator();
+        Emulator emulator = new Emulator("src\\\\main\\\\java\\\\ru\\\\melee_fox\\\\Virtual_File_System.zip");
         emulator.cd_Command("cdd bin");
         String result = emulator.getCurrentDirectory();
         Assertions.assertEquals("", result);
