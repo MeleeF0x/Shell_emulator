@@ -1,8 +1,8 @@
-package app;
+package ru.melee_fox.app;
 
 import java.io.IOException;
 
-import emulator.Emulator;
+import ru.melee_fox.emulator.Emulator;
 
 public class Main {
     public static void main(String[] args) throws IOException{

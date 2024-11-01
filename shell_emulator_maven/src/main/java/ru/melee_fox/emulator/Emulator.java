@@ -1,7 +1,7 @@
-package emulator;
+package ru.melee_fox.emulator;
 
 import java.util.Scanner;
-import app.inputClass;
+import ru.melee_fox.app.inputClass;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -17,7 +17,7 @@ public class Emulator {
     
     //конструктор
     public Emulator(){
-        pathToVirtualFileSystem = Path.of("src\\Virtual_File_System.zip").toAbsolutePath().toString();
+        pathToVirtualFileSystem = Path.of("src\\\\main\\\\java\\\\ru\\\\melee_fox\\\\Virtual_File_System.zip").toAbsolutePath().toString();
         CurrentDirectory = "";
     }
 
@@ -58,7 +58,6 @@ public class Emulator {
 
     //реализация комманды ls
     public void ls_Command(String input_line) throws IOException{
-        System.out.println(CurrentDirectory);
         if(!inputClass.lsInputControl(input_line)){
             System.out.println("command " + input_line + " not found");
             return;
@@ -71,17 +70,15 @@ public class Emulator {
                 System.out.println(entry.getName());
             }
         }
-        else{
-            while((entry = zin.getNextEntry()) != null){
-                if(entry.getName().startsWith(CurrentDirectory) && entry.getName().split("/").length == curr_dir_arr.length + 1){
-                    if(entry.isDirectory()){
-                        String[] file_path = entry.getName().split("/");
-                        System.out.println(file_path[file_path.length - 1] + "/");
-                    }
-                    else{
-                        String[] file_path = entry.getName().split("/");
-                        System.out.println(file_path[file_path.length - 1]);
-                    }
+        while((entry = zin.getNextEntry()) != null){
+            if(entry.getName().startsWith(CurrentDirectory) && entry.getName().split("/").length == curr_dir_arr.length + 1){
+                if(entry.isDirectory()){
+                    String[] file_path = entry.getName().split("/");
+                    System.out.println(file_path[file_path.length - 1] + "/");
+                }
+                else{
+                    String[] file_path = entry.getName().split("/");
+                    System.out.println(file_path[file_path.length - 1]);
                 }
             }
         }
@@ -123,7 +120,6 @@ public class Emulator {
 
     //реализация комманды cat
     public void cat_Command(String input_line) throws IOException{
-        System.out.println(CurrentDirectory);
         if(!inputClass.catInputControl(input_line, CurrentDirectory, this)){
             System.out.println("command " + input_line + " not found");
             return;
@@ -210,5 +206,14 @@ public class Emulator {
             System.out.println("command " + input_line + " not found");
             return false;
         }
+    }
+
+    //Геттеры и сеттеры
+    public String getCurrentDirectory(){
+        return CurrentDirectory;
+    }
+
+    public String getPathToVirtualFileSystem(){
+        return pathToVirtualFileSystem;
     }
 }

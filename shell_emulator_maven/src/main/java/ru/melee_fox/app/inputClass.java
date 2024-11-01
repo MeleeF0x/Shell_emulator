@@ -1,9 +1,9 @@
-package app;
+package ru.melee_fox.app;
 
 import java.io.IOException;
 import java.nio.file.Path;
 
-import emulator.*;
+import ru.melee_fox.emulator.*;
 
 public class inputClass {
 
@@ -18,7 +18,7 @@ public class inputClass {
     //Метод проверки ввода команды cd
     public static boolean cdInputControl(String input_line, String CurrentDirectory, Emulator emulator) throws IOException{
         String[] command_words = input_line.split(" ");
-            if(command_words.length != 2){
+            if(command_words.length != 2 || command_words[0].length() != 2){
                 return false;
             }
             if(CurrentDirectory == ""){
@@ -40,12 +40,11 @@ public class inputClass {
     //Метода проверки ввода команды cat
     public static boolean catInputControl(String input_line, String CurrentDirectory, Emulator emulator) throws IOException{
         String[] command_words = input_line.split(" ");
-            if(command_words.length != 2){
+            if(command_words.length != 2 || command_words[0].length() != 3){
                 return false;
             }
             CurrentDirectory = Path.of(CurrentDirectory + "/" + command_words[1]).normalize().toString();
-            CurrentDirectory = CurrentDirectory.replace("\\", "/").replaceFirst("/","");
-            System.out.println(CurrentDirectory);
+            CurrentDirectory = CurrentDirectory.replace("\\", "/");
             if(!emulator.isPathExist(CurrentDirectory)){
                 return false;
             }
@@ -63,7 +62,7 @@ public class inputClass {
     //Метода проверки ввода команды rev
     public static boolean revInputControl(String input_line, Path CurrentDirectory){
         String[] command_words = input_line.split(" ");
-            if(command_words.length != 2){
+            if(command_words.length != 2 || command_words[0].length() != 3){
                 return false;
             }
             return true;
